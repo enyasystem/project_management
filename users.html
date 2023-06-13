@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <!-- Header content -->
+  </header>
+
+  <div class="container">
+    <h1>Users</h1>
+    <p>Welcome to the user management page. Here, you can manage your team members and user profiles.</p>
+    <div class="user-list">
+      <h2>User List</h2>
+      <ul id="user-list">
+        <!-- User list items will be dynamically generated here -->
+      </ul>
+    </div>
+    <div class="user-profile">
+      <h2>User Profile</h2>
+      <div id="user-profile">
+        <!-- User profile details will be dynamically displayed here -->
+      </div>
+    </div>
+    <div class="add-user-form">
+      <h2>Add New User</h2>
+      <form id="add-user-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="role">Role</label>
+          <select id="role" name="role" required>
+            <option value="Project Manager">Project Manager</option>
+            <option value="Developer">Developer</option>
+            <option value="Designer">Designer</option>
+            <option value="Tester">Tester</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <button type="submit">Add User</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Fetch user data from the server and populate the user list
+    $(document).ready(function() {
+      $.get('/api/users', function(data) {
+        var userList = $('#user-list');
+        userList.empty();
+        data.forEach(function(user) {
+          var listItem = $('<li>').text(user.name + ' - ' + user.role);
+          userList.append(listItem);
+        });
+      });
+    });
+
+    // Fetch user profile data when a user list item is clicked
+    $(document).on('click', '#user-list li', function() {
+      var userId = $(this).attr('data-id');
+      $.get('/api/users/' + userId, function(user) {
+        var userProfile = $('#user-profile');
+        userProfile.empty();
+        var profileCard = $('<div>').addClass('profile-card');
+        $('<img>').attr('src', user.avatar).appendTo(profileCard);
+        $('<h3>').text(user.name).appendTo(profileCard);
+        $('<p>').text('Role: ' + user.role).appendTo(profileCard);
+        $('<p>').text('Email: ' + user.email).appendTo(profileCard);
+        userProfile.append(profileCard);
+      });
+    });
+
+    // Submit the add user form and save the new user
+    $('#add-user-form').submit(function(event) {
+      event.preventDefault();
+      var name = $('#name').val();
+      var role = $('#role').val();
+      var email = $('#email').val();
+      var newUser = {
+        name: name,
+        role: role,
+        email: email
+      };
+      $.post('/api/users', newUser, function(user) {
+        var userList = $('#user-list');
+        var listItem = $('<li>').text(user.name + ' - ' + user.role).attr('data-id', user.id);
+        userList.append(listItem);
+        $('#name').val('');
+        $('#role').val('');
+        $('#email').val('');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <!-- Header content -->
+  </header>
+
+  <div class="container">
+    <h1>Settings</h1>
+    <p>Customize your project management settings. Update your preferences, user details, and other configurations.</p>
+    <div class="user-details">
+      <h2>User Details</h2>
+      <div id="user-details">
+        <!-- User details will be dynamically generated here -->
+      </div>
+    </div>
+    <div class="update-form">
+      <h2>Update User Details</h2>
+      <form id="update-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <button type="submit">Update Details</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Fetch user details from the server and populate the user details section
+    $(document).ready(function() {
+      $.get('/api/user', function(user) {
+        var userDetails = $('#user-details');
+        userDetails.empty();
+        var name = $('<p>').text('Name: ' + user.name);
+        var email = $('<p>').text('Email: ' + user.email);
+        userDetails.append(name, email);
+      });
+    });
+
+    // Submit the update form and save the user details
+    $('#update-form').submit(function(event) {
+      event.preventDefault();
+      var name = $('#name').val();
+      var email = $('#email').val();
+      var userDetails = {
+        name: name,
+        email: email
+      };
+      $.post('/api/user', userDetails, function(response) {
+        var updatedName = response.name;
+        var updatedEmail = response.email;
+        var userDetails = $('#user-details');
+        userDetails.empty();
+        var name = $('<p>').text('Name: ' + updatedName);
+        var email = $('<p>').text('Email: ' + updatedEmail);
+        userDetails.append(name, email);
+        $('#name').val('');
+        $('#email').val('');
+      });
+    });
+  </script>
+</body>
+</html>

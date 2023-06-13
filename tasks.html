@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tasks</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <!-- Header content -->
+  </header>
+
+  <div class="container">
+    <h1>Tasks</h1>
+    <p>Manage and track the tasks for your projects. Create, update, and assign tasks to team members for efficient project management.</p>
+    <div class="task-list">
+      <h2>Task List</h2>
+      <ul id="task-list">
+        <!-- Task list items will be dynamically generated here -->
+      </ul>
+    </div>
+    <div class="add-task-form">
+      <h2>Add New Task</h2>
+      <form id="add-task-form">
+        <div class="form-group">
+          <label for="task-name">Task Name</label>
+          <input type="text" id="task-name" name="task-name" required>
+        </div>
+        <div class="form-group">
+          <label for="task-status">Status</label>
+          <select id="task-status" name="task-status" required>
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="assigned-to">Assigned To</label>
+          <input type="text" id="assigned-to" name="assigned-to" required>
+        </div>
+        <button type="submit">Add Task</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Fetch task data from the server and populate the task list
+    $(document).ready(function() {
+      $.get('/api/tasks', function(data) {
+        var taskList = $('#task-list');
+        taskList.empty();
+        data.forEach(function(task) {
+          var listItem = $('<li>').text(task.name);
+          taskList.append(listItem);
+        });
+      });
+    });
+
+    // Submit the add task form and save the new task
+    $('#add-task-form').submit(function(event) {
+      event.preventDefault();
+      var taskName = $('#task-name').val();
+      var taskStatus = $('#task-status').val();
+      var assignedTo = $('#assigned-to').val();
+      var newTask = {
+        name: taskName,
+        status: taskStatus,
+        assignedTo: assignedTo
+      };
+      $.post('/api/tasks', newTask, function(task) {
+        var taskList = $('#task-list');
+        var listItem = $('<li>').text(task.name);
+        taskList.append(listItem);
+        $('#task-name').val('');
+        $('#task-status').val('');
+        $('#assigned-to').val('');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <!-- Header content -->
+  </header>
+
+  <div class="container">
+    <h1>Dashboard</h1>
+    <p>Welcome to the project management dashboard. Get an overview of your projects, tasks, and team members.</p>
+    <div class="project-overview">
+      <h2>Project Overview</h2>
+      <div class="card">
+        <h3>Total Projects</h3>
+        <p id="total-projects">0</p>
+      </div>
+      <div class="card">
+        <h3>Completed Projects</h3>
+        <p id="completed-projects">0</p>
+      </div>
+      <div class="card">
+        <h3>In Progress Projects</h3>
+        <p id="inprogress-projects">0</p>
+      </div>
+    </div>
+    <div class="task-overview">
+      <h2>Task Overview</h2>
+      <div class="card">
+        <h3>Total Tasks</h3>
+        <p id="total-tasks">0</p>
+      </div>
+      <div class="card">
+        <h3>Completed Tasks</h3>
+        <p id="completed-tasks">0</p>
+      </div>
+      <div class="card">
+        <h3>Pending Tasks</h3>
+        <p id="pending-tasks">0</p>
+      </div>
+    </div>
+    <div class="team-overview">
+      <h2>Team Overview</h2>
+      <div class="card">
+        <h3>Total Members</h3>
+        <p id="total-members">0</p>
+      </div>
+      <div class="card">
+        <h3>Active Members</h3>
+        <p id="active-members">0</p>
+      </div>
+      <div class="card">
+        <h3>Inactive Members</h3>
+        <p id="inactive-members">0</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Fetch dashboard data from the server and populate the dashboard overview
+    $(document).ready(function() {
+      $.get('/api/dashboard', function(data) {
+        $('#total-projects').text(data.totalProjects);
+        $('#completed-projects').text(data.completedProjects);
+        $('#inprogress-projects').text(data.inProgressProjects);
+        $('#total-tasks').text(data.totalTasks);
+        $('#completed-tasks').text(data.completedTasks);
+        $('#pending-tasks').text(data.pendingTasks);
+        $('#total-members').text(data.totalMembers);
+        $('#active-members').text(data.activeMembers);
+        $('#inactive-members').text(data.inactiveMembers);
+      });
+    });
+  </script>
+</body>
+</html>
